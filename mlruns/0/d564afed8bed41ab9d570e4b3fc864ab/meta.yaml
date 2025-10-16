@@ -1,0 +1,15 @@
+artifact_uri: file:///D:/mlops-ead/mlruns/0/d564afed8bed41ab9d570e4b3fc864ab/artifacts
+end_time: 1760560195527
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: d564afed8bed41ab9d570e4b3fc864ab
+run_name: experiment_mlops_ead
+run_uuid: d564afed8bed41ab9d570e4b3fc864ab
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1760560194304
+status: 3
+tags: []
+user_id: baila

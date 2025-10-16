@@ -1,11 +1,23 @@
 import pandas as pd
 import pytest
+import numpy as np
+from sklearn import preprocessing
+from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, InputLayer
+from train import (reset_seeds,
+                    read_data,
+                    process_data,
+                    create_model,
+                    config_mlflow,
+                    train_model)
 
-from train import (read_data,
-                   create_model,
-                   train_model)
+#from train import (read_data,
+                   #create_model,
+                   #train_model)
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 @pytest.fixture
 def sample_data():

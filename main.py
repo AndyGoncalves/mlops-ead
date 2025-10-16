@@ -46,6 +46,11 @@ def load_model():
     MLFLOW_TRACKING_PASSWORD = 'b63baf8c662a23fa00deb74ba86600278769e5dd'
     os.environ['MLFLOW_TRACKING_USERNAME'] = MLFLOW_TRACKING_USERNAME
     os.environ['MLFLOW_TRACKING_PASSWORD'] = MLFLOW_TRACKING_PASSWORD
+    os.environ['MLFLOW_TRACKING_USERNAME'] = 'AndyGoncalves'
+    os.environ['MLFLOW_TRACKING_PASSWORD'] = '1d7f8459c2cdd075a0317f26fc322caf353acdf4'
+    mlflow.set_tracking_uri('https://dagshub.com/AndyGoncalves/mlops-ead.mlflow')
+
+
     print('setting mlflow...')
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     print('creating client..')
