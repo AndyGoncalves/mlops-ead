@@ -4,23 +4,23 @@ on:
   push:
   pull_request:
     branches:
-    - layers
+    #  layers
     - branch_01
   workflow_dispatch:
-  # Allows external webhook trigger
   repository_dispatch:
     types:
       - webhook
+
 jobs:
   test_train:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4 # CORRECTED: Updated to v4
         with:
           fetch-depth: 0
 
       - name: Set up Python 3.9
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v5 # CORRECTED: Updated to v5
         with:
           python-version: 3.9
 
@@ -33,37 +33,22 @@ jobs:
         run: |
           pytest test_train.py
 
-#  check_python_code_style:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v1
-#        with:
-#          fetch-depth: 0
-#
-#      - name: Set up Python 3.9
-#        uses: actions/setup-python@v1
-#        with:
-#          python-version: 3.9
-#
-#      - name: Install dependencies
-#        run: |
-#          python -m pip install --upgrade pip
-#          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-#
-#      - name: Validate Python Code Style
-#        run: |
-#          pycodestyle .
+  # You can uncomment this job if you need code style checking
+  # check_python_code_style:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     ...
 
   train_pipeline:
       runs-on: ubuntu-latest
       needs: [test_train]
       steps:
-          - uses: actions/checkout@v1
+          - uses: actions/checkout@v4 # CORRECTED: Updated to v4
             with:
               fetch-depth: 0
 
           - name: Set up Python 3.9
-            uses: actions/setup-python@v1
+            uses: actions/setup-python@v5 # CORRECTED: Updated to v5
             with:
                 python-version: 3.9
 
@@ -80,12 +65,21 @@ jobs:
     runs-on: ubuntu-latest
     needs: [train_pipeline]
     steps:
-      - uses: actions/checkout@v2
-      - name: docker login
-        run: |
-          docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag ${{secrets.DOCKER_USER}}/${{secrets.DOCKER_IMAGE_NAME}}
+      - uses: actions/checkout@v4 # CORRECTED: Updated to v4
 
-      - name: Docker Push
-        run: docker push ${{secrets.DOCKER_USER}}/${{secrets.DOCKER_IMAGE_NAME}}
+      - name: Set up Docker Buildx # CORRECTED: Required for build-push-action
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker Login # CORRECTED: Use secure login action
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }} # Use your PAT here
+
+      - name: Build and Push Docker image # CORRECTED: Combine build and push for reliability
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_IMAGE_NAME }}:latest
